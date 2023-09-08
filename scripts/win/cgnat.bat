@@ -32,9 +32,9 @@ rem Check if CGNAT is detected
 if defined count_hop (
     set /a count_hop=count_hop
     if !count_hop! gtr 2 (
-        echo CGNAT detected!
+        echo CGNAT Alert: CGNAT detected. Please review your network configuration.
     ) else (
-        echo No CGNAT detected!
+        echo CGNAT status: Clear! No CGNAT detected.
     )
 ) else (
     echo Unable to check for CGNAT detection due to an error.
