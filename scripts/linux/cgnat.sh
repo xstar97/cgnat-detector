@@ -19,7 +19,7 @@ else
         if [ "$hop_count" -gt 2 ]; then
             echo "CGNAT Alert: CGNAT detected. Please review your network configuration."
         else
-            echo "CGNAT status: Clear! No CGNAT detected."
+            echo "CGNAT status: No CGNAT detected."
         fi
     else
         echo "Unable to determine the hop count."
