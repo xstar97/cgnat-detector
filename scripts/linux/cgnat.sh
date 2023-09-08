@@ -7,7 +7,7 @@ public_ip=$(curl -s ifconfig.me)
 if [ -z "$public_ip" ]; then
     echo "Unable to determine your public IP address."
 else
-    echo "Public IP address is: $public_ip"
+    echo "Public IP: $public_ip"
 
     # Perform a traceroute to your public IP address
     hop_count=$(traceroute -n $public_ip | tail -n 1 | awk '{print $1}')
