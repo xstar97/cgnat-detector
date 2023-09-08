@@ -3,7 +3,7 @@
 ## Linux
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/cgnat-detector/main/scripts/linux/cgnat.sh | bas
+curl -sSL https://raw.githubusercontent.com/xstar97/cgnat-detector/main/scripts/linux/cgnat.sh | bash
 ```
 
 ## Windows
