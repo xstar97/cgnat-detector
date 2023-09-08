@@ -13,7 +13,7 @@ else
     hop_count=$(traceroute -n $public_ip | tail -n 1 | awk '{print $1}')
     
     if [ -n "$hop_count" ]; then
-        echo "The hop count is: $hop_count"
+        echo "Hops: $hop_count"
         
         # Check if CGNAT is detected
         if [ "$hop_count" -gt 2 ]; then
