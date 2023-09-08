@@ -16,7 +16,7 @@ if defined public_ip (
 )
 
 if defined public_ip (
-    echo Public IP address is: !public_ip!
+    echo Public IP: !public_ip!
 ) else (
     echo Unable to determine your public IP address.
 )
