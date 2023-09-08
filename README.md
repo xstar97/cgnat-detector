@@ -1,4 +1,4 @@
-# cgnat-detector
+# Network Scripts
 
 ## Linux
 
