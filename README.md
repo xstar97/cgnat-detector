@@ -9,5 +9,5 @@ curl -sSL https://raw.githubusercontent.com/xstar97/cgnat-detector/main/scripts/
 ## Windows
 
 ```shell
-curl -s -o cgnat.bat -LJO https://github.com/xstar97/cgnat-detector/raw/main/scripts/win/cgnat.bat && chmod +x cgnat.bat && ./cgnat.bat
+ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/xstar97/cgnat-detector/main/scripts/win/cgnat.bat" -OutFile "cgnat.bat" ; .\cgnat.bat
 ```
