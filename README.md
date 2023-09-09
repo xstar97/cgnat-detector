@@ -33,5 +33,5 @@ The following scripts are designed to update the DNS for your client device.
 ### Windows
 
 ```shell
- curl -o cgnat.bat https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/win/dns.bat ; .\dns.bat
+ curl -o dns.bat https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/win/dns.bat ; .\dns.bat
 ```
