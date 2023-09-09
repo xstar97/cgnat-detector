@@ -9,7 +9,7 @@ anonymize_host() {
     local anon_flag="$2"
 
     if [ "$anon_flag" == "anon" ]; then
-        anonymized_host=$(echo "$host" | sed 's/[0-9]/#/g')
+        anonymized_host=${host//[0-9]/#}
     else
         anonymized_host="$host"
     fi
@@ -31,8 +31,7 @@ check_port() {
         exit 1
     fi
 
-    $nc_command "$host" "$port" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    if $nc_command "$host" "$port" >/dev/null 2>&1; then
         echo "$protocol Port $port is open on $(anonymize_host "$host" "$anon_flag")"
     else
         echo "$protocol Port $port is closed on $(anonymize_host "$host" "$anon_flag")"

@@ -1,7 +1,17 @@
 #!/bin/bash
 
-# Get your public IP address using curl
-host=$(curl -s ifconfig.me)
+# List of services to try
+services=("ifconfig.me" "icanhazip.com" "ipinfo.io/ip")
+
+# Attempt to get the public IP address using curl
+for service in "${services[@]}"; do
+    host=$(curl -s "$service")
+    
+    # If host is not empty, break out of the loop
+    if [ -n "$host" ]; then
+        break
+    fi
+done
 
 # Function to anonymize the host by replacing numbers with #
 anonymize_host() {
@@ -9,7 +19,7 @@ anonymize_host() {
     local anon_flag="$2"
 
     if [ "$anon_flag" == "anon" ]; then
-        anonymized_host=$(echo "$host" | sed 's/[0-9]/#/g')
+        anonymized_host=${host//[0-9]/#}
     else
         anonymized_host="$host"
     fi
