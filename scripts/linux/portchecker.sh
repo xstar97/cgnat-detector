@@ -42,6 +42,11 @@ validate_port() {
     return 0
 }
 
+usage() {
+    echo "Usage: $0 <port> <tcp/udp> [anon]"
+    exit 1
+}
+
 # Checks if the specified port is open for the given protocol (TCP/UDP) on the fetched public IP.
 check_port() {
     local nc_command
@@ -61,8 +66,7 @@ check_port() {
 
 # Validate input arguments
 if [ $# -lt 2 ] || [ $# -gt 3 ]; then
-    echo "Usage: $0 <port> <tcp/udp> [anon]"
-    exit 1
+    usage
 fi
 
 # Fetch IP
@@ -73,7 +77,7 @@ fi
 
 port="$1"
 if ! validate_port "$port"; then
-    exit 1
+    usage
 fi
 
 protocol="$2"
