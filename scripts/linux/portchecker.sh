@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Initialize the anom flag to false
-anom=false
+# Initialize the anon flag to false
+anon=false
 port=""
 protocol=""
 
-# Check if the anom flag is provided as an argument
+# Check if the anon flag is provided as an argument
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-        -anom|--anonymize)
-            anom=true
+        -anon|--anonymous)
+            anon=true
             shift
             ;;
         *)
@@ -53,7 +53,7 @@ check_port() {
 
     $nc_command "$host" "$port" >/dev/null 2>&1
 
-    if [ "$anom" = true ]; then
+    if [ "$anon" = true ]; then
         host="##.##.##.###"
     fi
 

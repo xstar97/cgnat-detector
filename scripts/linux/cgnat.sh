@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Initialize the anom flag to false
-anom=false
+# Initialize the anon flag to false
+anon=false
 
-# Check if the anom flag is provided as an argument
+# Check if the anon flag is provided as an argument
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-        -anom|--anonymize)
-            anom=true
+        -anon|--anonymous)
+            anon=true
             shift
             ;;
         *)
@@ -25,7 +25,7 @@ public_ip=$(curl -s ifconfig.me)
 if [ -z "$public_ip" ]; then
     echo "Unable to determine your public IP address."
 else
-    if [ "$anom" = true ]; then
+    if [ "$anon" = true ]; then
         echo "Public IP: ##.##.##.###"
     else
         echo "Public IP: $public_ip"
