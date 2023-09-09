@@ -1,5 +1,33 @@
 #!/bin/bash
 
+# Initialize the anom flag to false
+anom=false
+port=""
+protocol=""
+
+# Check if the anom flag is provided as an argument
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -anom|--anonymize)
+            anom=true
+            shift
+            ;;
+        *)
+            if [ -z "$port" ]; then
+                port="$1"
+                shift
+            elif [ -z "$protocol" ]; then
+                protocol="$1"
+                shift
+            else
+                # Ignore any additional arguments
+                shift
+            fi
+            ;;
+    esac
+done
+
 # Define the internal host
 host=$(curl -s ifconfig.me)
 
@@ -17,7 +45,18 @@ check_port() {
         exit 1
     fi
 
-    $nc_command "$host" "$port"
+    # Check if nc is available
+    if ! command -v nc &> /dev/null; then
+        echo "Error: 'nc' command is not available. Please install netcat (nc)."
+        exit 1
+    fi
+
+    $nc_command "$host" "$port" >/dev/null 2>&1
+
+    if [ "$anom" = true ]; then
+        host="##.##.##.###"
+    fi
+
     if [ $? -eq 0 ]; then
         echo "$protocol Port $port is open on $host"
     else
@@ -26,12 +65,9 @@ check_port() {
 }
 
 # Check if the script is provided with the required arguments
-if [ $# -ne 2 ]; then
+if [ -z "$port" ] || [ -z "$protocol" ]; then
     echo "Usage: $0 <port> <tcp/udp>"
     exit 1
 fi
-
-port="$1"
-protocol="$2"
 
 check_port "$port" "$protocol"

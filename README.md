@@ -7,6 +7,10 @@ The following scripts are designed to detect Carrier-Grade Network Address Trans
 ### Linux
 
 ```shell
+curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash -anom
+```
+
+```shell
 curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash
 ```
 
@@ -21,6 +25,10 @@ curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts
 The following scripts are designed to check whether a specific port and its associated type are open on a target device or server. This is useful for network administrators and security professionals to verify if a particular service or application is accessible and available for communication over a network connection. By running these scripts, you can determine if the desired port is accepting incoming connections, helping to diagnose network connectivity and accessibility.
 
 ### Linux
+
+```shell
+curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh | bash -s 443 tcp -anom
+```
 
 ```shell
 curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh | bash -s 443 tcp

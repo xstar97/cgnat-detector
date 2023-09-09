@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# Initialize the anom flag to false
+anom=false
+
+# Check if the anom flag is provided as an argument
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -anom|--anonymize)
+            anom=true
+            shift
+            ;;
+        *)
+            # Ignore unknown flags
+            shift
+            ;;
+    esac
+done
+
 # Get your public IP address using curl
 public_ip=$(curl -s ifconfig.me)
 
@@ -7,7 +25,11 @@ public_ip=$(curl -s ifconfig.me)
 if [ -z "$public_ip" ]; then
     echo "Unable to determine your public IP address."
 else
-    echo "Public IP: $public_ip"
+    if [ "$anom" = true ]; then
+        echo "Public IP: ##.##.##.###"
+    else
+        echo "Public IP: $public_ip"
+    fi
 
     # Perform a traceroute to your public IP address
     hop_count=$(traceroute -n $public_ip | tail -n 1 | awk '{print $1}')
