@@ -1,0 +1,8 @@
+#CGNAT
+/network/linux/cgnat https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh 308
+/network/win/cgnat https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/win/cgnat.bat 308
+#PW
+/network/linux/pchecker https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh 308
+
+# wildcard
+/ https://github.com/xstar97/network-scripts 308
