@@ -1,53 +1,35 @@
 #!/bin/bash
 
-# List of services to try
-services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
 
-# Regular expression for IPv4
-ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
+# Fetches and returns a valid public IPv4 address from a list of services.
+fetch_ip() {
+    local services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+    local ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
 
-# Attempt to get the public IP address using curl
-for service in "${services[@]}"; do
-    host=$(curl -4 -s "$service")
-    
-    # If host matches IPv4 format, break out of the loop
-    if [[ "$host" =~ $ipv4_regex ]]; then
-        break
-    fi
-done
+    for service in "${services[@]}"; do
+        local ip
 
-# Function to anonymize the host by replacing numbers with #
-anonymize_host() {
-    local host="$1"
-    local anon_flag="$2"
+        ip=$(curl -4 -s "$service")
 
-    if [ "$anon_flag" == "anon" ]; then
-        anonymized_host=${host//[0-9]/#}
-    else
-        anonymized_host="$host"
-    fi
-
-    echo "$anonymized_host"
+        if [[ "$ip" =~ $ipv4_regex ]]; then
+            echo "$ip"
+            return 0
+        fi
+    done
+    return 1
 }
 
-# Define a function to detect CGNAT
+# Main CGNAT detection function
 detect_cgnat() {
+    echo "Public IP: $(anonymize_host)"
 
-    # Check if host is empty
-    if [ -z "$host" ]; then
-        echo "Unable to determine your public IP address."
-        return
-    fi
+    local hop_count
 
-    echo "Public IP: $(anonymize_host "$host" "$anon_flag")"
-
-    # Perform a traceroute to your public IP address
-    hop_count=$(traceroute -n $host | tail -n 1 | awk '{print $1}')
-
+    hop_count=$(traceroute -n "$host" | tail -n 1 | awk '{print $1}')
+    
     if [ -n "$hop_count" ]; then
         echo "Hops: $hop_count"
 
-        # Check if CGNAT is detected
         if [ "$hop_count" -gt 2 ]; then
             echo "CGNAT detected!"
         else
@@ -58,11 +40,18 @@ detect_cgnat() {
     fi
 }
 
-# If the anon flag is provided as the first argument, use it; otherwise, don't anonymize
-if [ $# -eq 1 ] && [ "$1" == "anon" ]; then
-    anon_flag="anon"
-else
-    anon_flag="no_anon"
+# Host anonymization function
+anonymize_host() {
+    [[ "$anon_flag" == "anon" ]] && echo "${host//[0-9]/#}" || echo "$host"
+}
+
+if ! host=$(fetch_ip); then
+    echo "Failed to retrieve a valid IPv4 address."
+    exit 1
 fi
+
+# Check if the anon flag is provided as the first argument
+anon_flag="${1,,:-no_anon}"
+
 # Call the function to detect CGNAT
 detect_cgnat

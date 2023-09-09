@@ -1,71 +1,87 @@
 #!/bin/bash
 
-# List of services to try
-services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
 
-# Regular expression for IPv4
-ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
+# Fetches and returns a valid public IPv4 address from a list of services.
+fetch_ip() {
+    local services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+    local ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
 
-# Attempt to get the public IP address using curl
-for service in "${services[@]}"; do
-    host=$(curl -4 -s "$service")
-    
-    # If host matches IPv4 format, break out of the loop
-    if [[ "$host" =~ $ipv4_regex ]]; then
-        break
-    fi
-done
+    for service in "${services[@]}"; do
+        local ip
 
-# Function to anonymize the host by replacing numbers with #
-anonymize_host() {
-    local host="$1"
-    local anon_flag="$2"
+        ip=$(curl -4 -s "$service")
 
-    if [ "$anon_flag" == "anon" ]; then
-        anonymized_host=${host//[0-9]/#}
-    else
-        anonymized_host="$host"
-    fi
-
-    echo "$anonymized_host"
+        if [[ "$ip" =~ $ipv4_regex ]]; then
+            echo "$ip"
+            return 0
+        fi
+    done
+    return 1
 }
 
-# Function to check if the TCP or UDP port is open
-check_port() {
-    local port="$1"
-    local protocol="$2"
+# Anonymizes the IP address by replacing numbers with '#'. Otherwise, returns the IP as it is.
+anonymize_host() {
+    [[ "$anon_flag" == "anon" ]] && echo "${host//[0-9]/#}" || echo "$host"
+}
 
-    if [ "$protocol" == "tcp" ]; then
-        nc_command="nc -z -v -w 5"
-    elif [ "$protocol" == "udp" ]; then
-        nc_command="nc -u -z -v -w 5"
-    else
-        echo "Invalid protocol. Use 'tcp' or 'udp'."
-        exit 1
+validate_port() {
+    local port="$1"
+
+    # Check if it's a number
+    if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+        echo "Error: The provided port ($port) is not a valid number."
+        return 1
     fi
+
+    # Check if it's within the valid range
+    if [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+        echo "Error: The provided port ($port) is out of the valid range (1-65535)."
+        return 1
+    fi
+
+    return 0
+}
+
+usage() {
+    echo "Usage: $0 <port> <tcp/udp> [anon]"
+    exit 1
+}
+
+# Checks if the specified port is open for the given protocol (TCP/UDP) on the fetched public IP.
+check_port() {
+    local nc_command
+    
+    case "$protocol" in
+        tcp) nc_command="nc -z -v -w 5" ;;
+        udp) nc_command="nc -u -z -v -w 5" ;;
+        *) echo "Invalid protocol. Use 'tcp' or 'udp'."; exit 1 ;;
+    esac
 
     if $nc_command "$host" "$port" >/dev/null 2>&1; then
-        echo "$protocol Port $port is open on $(anonymize_host "$host" "$anon_flag")"
+        echo "$protocol Port $port is open on $(anonymize_host)"
     else
-        echo "$protocol Port $port is closed on $(anonymize_host "$host" "$anon_flag")"
+        echo "$protocol Port $port is closed on $(anonymize_host)"
     fi
 }
 
-# Check if the script is provided with the required arguments (2 or 3)
+# Validate input arguments
 if [ $# -lt 2 ] || [ $# -gt 3 ]; then
-    echo "Usage: $0 <port> <tcp/udp> [anon]"
+    usage
+fi
+
+# Fetch IP
+if ! host=$(fetch_ip); then
+    echo "Failed to retrieve a valid IPv4 address."
     exit 1
 fi
 
 port="$1"
-protocol="$2"
-
-# If the anon flag is provided as the third argument, use it; otherwise, don't anonymize
-if [ $# -eq 3 ] && [ "$3" == "anon" ]; then
-    anon_flag="anon"
-else
-    anon_flag="no_anon"
+if ! validate_port "$port"; then
+    usage
 fi
 
-# Call the check_port function
-check_port "$port" "$protocol"
+protocol="${2,,}"
+anon_flag=$(echo "${3:-no_anon}" | tr '[:upper:]' '[:lower:]')
+
+# Check the port status
+check_port
