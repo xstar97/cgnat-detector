@@ -1,2 +1,8 @@
+# scripts
+/s/l/cgnat /scripts/linux/cgnat.sh 308
+/s/l/portchecker /scripts/linux/portchecker.sh 308
+
+/s/w/cgnat /scripts/win/cgnat.sh 308
+
 # wildcard
 / /README.md 308
