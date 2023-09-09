@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# List of services to fetch public IP
-services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
-
-# Regular expression for IPv4 validation
-ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
 
 # Fetches and returns a valid public IPv4 address from a list of services.
 fetch_ip() {
+    local services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+    local ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
+
     for service in "${services[@]}"; do
         local ip
 
@@ -23,19 +21,11 @@ fetch_ip() {
 
 # Anonymizes the IP address by replacing numbers with '#'. Otherwise, returns the IP as it is.
 anonymize_host() {
-    local host="$1"
-    local anon_flag="$2"
-    
     [[ "$anon_flag" == "anon" ]] && echo "${host//[0-9]/#}" || echo "$host"
 }
 
 # Checks if the specified port is open for the given protocol (TCP/UDP) on the fetched public IP.
 check_port() {
-    local ip="$1"
-    local port="$2"
-    local protocol="$3"
-    local anon_flag="$4"
-    
     local nc_command
     
     case "$protocol" in
@@ -45,9 +35,9 @@ check_port() {
     esac
 
     if $nc_command "$ip" "$port" >/dev/null 2>&1; then
-        echo "$protocol Port $port is open on $(anonymize_host "$ip" "$anon_flag")"
+        echo "$protocol Port $port is open on $(anonymize_host)"
     else
-        echo "$protocol Port $port is closed on $(anonymize_host "$ip" "$anon_flag")"
+        echo "$protocol Port $port is closed on $(anonymize_host)"
     fi
 }
 
@@ -68,4 +58,4 @@ protocol="$2"
 anon_flag="${3:-no_anon}"
 
 # Check the port status
-check_port "$host" "$port" "$protocol" "$anon_flag"
+check_port

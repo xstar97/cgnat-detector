@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# List of services to try
-services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
-
-# Regular expression for IPv4
-ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
 
 # Fetch IP address function
 fetch_ip() {
+    local services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+    local ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
+
     for service in "${services[@]}"; do
         local ip
 
@@ -23,13 +21,11 @@ fetch_ip() {
 
 # Main CGNAT detection function
 detect_cgnat() {
-    local ip="$1"
-    
-    echo "Public IP: $(anonymize_host "$ip" "$anon_flag")"
+    echo "Public IP: $(anonymize_host)"
 
     local hop_count
 
-    hop_count=$(traceroute -n "$ip" | tail -n 1 | awk '{print $1}')
+    hop_count=$(traceroute -n "$host" | tail -n 1 | awk '{print $1}')
     
     if [ -n "$hop_count" ]; then
         echo "Hops: $hop_count"
@@ -46,9 +42,6 @@ detect_cgnat() {
 
 # Host anonymization function
 anonymize_host() {
-    local host="$1"
-    local anon_flag="$2"
-    
     [[ "$anon_flag" == "anon" ]] && echo "${host//[0-9]/#}" || echo "$host"
 }
 
@@ -61,4 +54,4 @@ fi
 anon_flag="${1:-no_anon}"
 
 # Call the function to detect CGNAT
-detect_cgnat "$host"
+detect_cgnat
