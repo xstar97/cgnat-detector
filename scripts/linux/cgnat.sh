@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# Fetch IP address function
+# Fetches and returns a valid public IPv4 address from a list of services.
 fetch_ip() {
     local services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
     local ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
