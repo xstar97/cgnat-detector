@@ -4,19 +4,9 @@
 anon=false
 
 # Check if the anon flag is provided as an argument
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -anon|--anonymous)
-            anon=true
-            shift
-            ;;
-        *)
-            # Ignore unknown flags
-            shift
-            ;;
-    esac
-done
+if [[ "$*" == *"-anon"* ]]; then
+    anon=true
+fi
 
 # Get your public IP address using curl
 public_ip=$(curl -s ifconfig.me)
