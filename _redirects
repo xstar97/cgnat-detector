@@ -1,8 +1,9 @@
-# scripts
+# Redirect entries for Linux:
 /s/l/cgnat /scripts/linux/cgnat.sh 308
 /s/l/portchecker /scripts/linux/portchecker.sh 308
 
-/s/w/cgnat /scripts/win/cgnat.sh 308
+# Redirect entries for Windows:
+/s/w/cgnat /scripts/win/cgnat.bat 308
 
-# wildcard
+# Custom redirect entry:
 / /README.md 308
