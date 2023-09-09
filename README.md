@@ -7,7 +7,7 @@ The following scripts are designed to detect Carrier-Grade Network Address Trans
 ### Linux
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash -s -anon
+curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash -s -- -anon
 ```
 
 ```shell
