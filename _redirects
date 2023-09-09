@@ -5,5 +5,7 @@
 # Redirect entries for Windows:
 /s/w/cgnat /scripts/win/cgnat.bat 308
 
-# Custom redirect entry:
+# Custom redirect entries:
+/gh /https://github.com/xstar97/network-scripts 308
+/github /https://github.com/xstar97/network-scripts 308
 / /README.md 308

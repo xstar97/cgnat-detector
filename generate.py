@@ -25,8 +25,12 @@ linux_redirects_entries = generate_redirects_entries(linux_folder, "l")
 # Generate redirect entries for Windows
 win_redirects_entries = generate_redirects_entries(win_folder, "w")
 
-# Add a custom entry
-custom_entry = "/ /README.md 308"
+# Add custom redirect entries
+custom_entries = [
+    "/gh /https://github.com/xstar97/network-scripts 308",
+    "/github /https://github.com/xstar97/network-scripts 308",
+    "/ /README.md 308"
+]
 
 # Write the entries to the _redirects file, including comments to separate lists
 with open("_redirects", "w") as redirect_file:
@@ -34,7 +38,7 @@ with open("_redirects", "w") as redirect_file:
     redirect_file.write("\n".join(linux_redirects_entries))
     redirect_file.write("\n\n# Redirect entries for Windows:\n")
     redirect_file.write("\n".join(win_redirects_entries))
-    redirect_file.write("\n\n# Custom redirect entry:\n")
-    redirect_file.write(custom_entry)
+    redirect_file.write("\n\n# Custom redirect entries:\n")
+    redirect_file.write("\n".join(custom_entries))
 
 print("Redirect entries generated and written to _redirects file.")
