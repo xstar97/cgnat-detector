@@ -1,7 +1,20 @@
 #!/bin/bash
 
-# Define the internal host
-host=$(curl -s ifconfig.me)
+# List of services to try
+services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+
+# Regular expression for IPv4
+ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
+
+# Attempt to get the public IP address using curl
+for service in "${services[@]}"; do
+    host=$(curl -4 -s "$service")
+    
+    # If host matches IPv4 format, break out of the loop
+    if [[ "$host" =~ $ipv4_regex ]]; then
+        break
+    fi
+done
 
 # Function to anonymize the host by replacing numbers with #
 anonymize_host() {
@@ -9,7 +22,7 @@ anonymize_host() {
     local anon_flag="$2"
 
     if [ "$anon_flag" == "anon" ]; then
-        anonymized_host=$(echo "$host" | sed 's/[0-9]/#/g')
+        anonymized_host=${host//[0-9]/#}
     else
         anonymized_host="$host"
     fi
@@ -31,8 +44,7 @@ check_port() {
         exit 1
     fi
 
-    $nc_command "$host" "$port" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    if $nc_command "$host" "$port" >/dev/null 2>&1; then
         echo "$protocol Port $port is open on $(anonymize_host "$host" "$anon_flag")"
     else
         echo "$protocol Port $port is closed on $(anonymize_host "$host" "$anon_flag")"
