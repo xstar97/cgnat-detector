@@ -1,14 +1,17 @@
 #!/bin/bash
 
 # List of services to try
-services=("ifconfig.me" "icanhazip.com" "ipinfo.io/ip")
+services=("ifconfig.me/ip" "ipinfo.io/ip" "icanhazip.com")
+
+# Regular expression for IPv4
+ipv4_regex="^([0-9]{1,3}[.]){3}[0-9]{1,3}$"
 
 # Attempt to get the public IP address using curl
 for service in "${services[@]}"; do
-    host=$(curl -s "$service")
+    host=$(curl -4 -s "$service")
     
-    # If host is not empty, break out of the loop
-    if [ -n "$host" ]; then
+    # If host matches IPv4 format, break out of the loop
+    if [[ "$host" =~ $ipv4_regex ]]; then
         break
     fi
 done
