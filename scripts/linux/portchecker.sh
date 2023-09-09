@@ -1,35 +1,21 @@
 #!/bin/bash
 
-# Initialize the anon flag to false
-anon=false
-port=""
-protocol=""
-
-# Check if the anon flag is provided as an argument
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -anon|--anonymous)
-            anon=true
-            shift
-            ;;
-        *)
-            if [ -z "$port" ]; then
-                port="$1"
-                shift
-            elif [ -z "$protocol" ]; then
-                protocol="$1"
-                shift
-            else
-                # Ignore any additional arguments
-                shift
-            fi
-            ;;
-    esac
-done
-
 # Define the internal host
 host=$(curl -s ifconfig.me)
+
+# Function to anonymize the host by replacing numbers with #
+anonymize_host() {
+    local host="$1"
+    local anon_flag="$2"
+
+    if [ "$anon_flag" == "anon" ]; then
+        anonymized_host=$(echo "$host" | sed 's/[0-9]/#/g')
+    else
+        anonymized_host="$host"
+    fi
+
+    echo "$anonymized_host"
+}
 
 # Function to check if the TCP or UDP port is open
 check_port() {
@@ -45,29 +31,29 @@ check_port() {
         exit 1
     fi
 
-    # Check if nc is available
-    if ! command -v nc &> /dev/null; then
-        echo "Error: 'nc' command is not available. Please install netcat (nc)."
-        exit 1
-    fi
-
     $nc_command "$host" "$port" >/dev/null 2>&1
-
-    if [ "$anon" = true ]; then
-        host="##.##.##.###"
-    fi
-
     if [ $? -eq 0 ]; then
-        echo "$protocol Port $port is open on $host"
+        echo "$protocol Port $port is open on $(anonymize_host "$host" "$anon_flag")"
     else
-        echo "$protocol Port $port is closed on $host"
+        echo "$protocol Port $port is closed on $(anonymize_host "$host" "$anon_flag")"
     fi
 }
 
-# Check if the script is provided with the required arguments
-if [ -z "$port" ] || [ -z "$protocol" ]; then
-    echo "Usage: $0 <port> <tcp/udp>"
+# Check if the script is provided with the required arguments (2 or 3)
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
+    echo "Usage: $0 <port> <tcp/udp> [anon]"
     exit 1
 fi
 
+port="$1"
+protocol="$2"
+
+# If the anon flag is provided as the third argument, use it; otherwise, don't anonymize
+if [ $# -eq 3 ] && [ "$3" == "anon" ]; then
+    anon_flag="anon"
+else
+    anon_flag="no_anon"
+fi
+
+# Call the check_port function
 check_port "$port" "$protocol"

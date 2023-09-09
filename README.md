@@ -7,11 +7,7 @@ The following scripts are designed to detect Carrier-Grade Network Address Trans
 ### Linux
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash -s -- -anon
-```
-
-```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash
+curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/cgnat.sh | bash -s anon
 ```
 
 ### Windows
@@ -27,9 +23,5 @@ The following scripts are designed to check whether a specific port and its asso
 ### Linux
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh | bash -s 443 tcp -anon
-```
-
-```shell
-curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh | bash -s 443 tcp
+curl -sSL https://raw.githubusercontent.com/xstar97/network-scripts/main/scripts/linux/portchecker.sh | bash -s 443 tcp anon
 ```
