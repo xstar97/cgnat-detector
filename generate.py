@@ -27,8 +27,8 @@ win_redirects_entries = generate_redirects_entries(win_folder, "w")
 
 # Add custom redirect entries
 custom_entries = [
-    "/gh /https://github.com/xstar97/network-scripts 308",
-    "/github /https://github.com/xstar97/network-scripts 308",
+    "/gh https://github.com/xstar97/network-scripts 308",
+    "/github https://github.com/xstar97/network-scripts 308",
     "/ /README.md 308"
 ]
 
