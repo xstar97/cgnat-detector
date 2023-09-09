@@ -80,8 +80,8 @@ if ! validate_port "$port"; then
     usage
 fi
 
-protocol="$2"
-anon_flag="${3:-no_anon}"
+protocol="${2,,}"
+anon_flag=$(echo "${3:-no_anon}" | tr '[:upper:]' '[:lower:]')
 
 # Check the port status
 check_port

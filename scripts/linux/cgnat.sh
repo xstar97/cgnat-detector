@@ -51,7 +51,7 @@ if ! host=$(fetch_ip); then
 fi
 
 # Check if the anon flag is provided as the first argument
-anon_flag="${1:-no_anon}"
+anon_flag="${1,,:-no_anon}"
 
 # Call the function to detect CGNAT
 detect_cgnat
