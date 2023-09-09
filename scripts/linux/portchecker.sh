@@ -24,6 +24,24 @@ anonymize_host() {
     [[ "$anon_flag" == "anon" ]] && echo "${host//[0-9]/#}" || echo "$host"
 }
 
+validate_port() {
+    local port="$1"
+
+    # Check if it's a number
+    if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+        echo "Error: The provided port ($port) is not a valid number."
+        return 1
+    fi
+
+    # Check if it's within the valid range
+    if [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+        echo "Error: The provided port ($port) is out of the valid range (1-65535)."
+        return 1
+    fi
+
+    return 0
+}
+
 # Checks if the specified port is open for the given protocol (TCP/UDP) on the fetched public IP.
 check_port() {
     local nc_command
@@ -34,7 +52,7 @@ check_port() {
         *) echo "Invalid protocol. Use 'tcp' or 'udp'."; exit 1 ;;
     esac
 
-    if $nc_command "$ip" "$port" >/dev/null 2>&1; then
+    if $nc_command "$host" "$port" >/dev/null 2>&1; then
         echo "$protocol Port $port is open on $(anonymize_host)"
     else
         echo "$protocol Port $port is closed on $(anonymize_host)"
@@ -54,6 +72,10 @@ if ! host=$(fetch_ip); then
 fi
 
 port="$1"
+if ! validate_port "$port"; then
+    exit 1
+fi
+
 protocol="$2"
 anon_flag="${3:-no_anon}"
 
